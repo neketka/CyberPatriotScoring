@@ -20,8 +20,6 @@ namespace ScoringGenerator
         }
         public static void Main(string[] args)
         {
-            Console.WriteLine(Parser.ToPostfix("!0 & 1".Replace(" ", "")+ " "));
-            Console.ReadKey();
             string imgFolderPath = "";
             string imgPath = "";
             if (args.Length == 0)
