@@ -1,0 +1,50 @@
+{
+  "pipModules": ["playsound"],
+  "defaults": [
+    {
+      "name": "createUser",
+      "platforms": ["ubuntu"],
+      "props": { "user": "jappleseed" },
+      "language": "python",
+      "src": ""
+    }
+  ],
+  "checks": [
+    {
+      "name": "fileExists",
+      "props": { "path": "" },
+      "language": "python",
+      "src": ""
+    },
+    {
+      "name": "commandContains",
+      "props": {
+        "command": "",
+        "query": "",
+        "regex": ""
+      },
+      "language": "python",
+      "src": ""
+    },
+    {
+      "name": "fileContains",
+      "props": {
+        "path": "",
+        "query": "",
+        "regex": ""
+      },
+      "language": "python",
+      "src": ""
+    },
+    {
+      "name": "userExists",
+      "extends": "fileContains",
+      "platforms": ["ubuntu"],
+      "props": { "user": "" },
+      "extendedProps": {
+        "path": "/etc/passwd",
+        "query": "$user"
+      }
+    }
+  ]
+}
