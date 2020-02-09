@@ -59,21 +59,7 @@ namespace ScoringGenerator
             JArray imgVulns = new JArray();
             JArray imgPens = new JArray();
 
-            finalImage["pipModules"] = pip;
-            finalImage["checks"] = checks;
-            finalImage["extChecks"] = extChecks;
-            finalImage["defaults"] = defaults;
-
-            finalImage["imgData"] = imgData;
-            finalImage["imgDefaults"] = imgDefaults;
-            finalImage["imgVulns"] = imgVulns;
-            finalImage["imgPens"] = imgPens;
-
-            finalImage["scoringServer"] = mainImageFile["scoringServer"];
-            finalImage["platform"] = mainImageFile["platform"];
-            finalImage["pollingRate"] = mainImageFile["pollingRate"];
-            finalImage["readme"] = File.ReadAllText(mainImageFile["readme"].Value<string>());
-            finalImage["timestamp"] = DateTime.UtcNow.ToString();
+            string platform = mainImageFile["platform"].Value<string>();
 
             SHA256Managed sha = new SHA256Managed();
             foreach (JProperty prop in ((JObject)mainImageFile["hashes"]).Properties())
@@ -86,7 +72,7 @@ namespace ScoringGenerator
                 imgData.Add(prop.Name, hash);
             }
 
-            foreach (JProperty prop in ((JObject)mainImageFile["hashes"]).Properties())
+            foreach (JProperty prop in ((JObject)mainImageFile["files"]).Properties())
             {
                 byte[] data = File.ReadAllBytes(imgFolderPath + "\\" + prop.Value.Value<string>());
                 imgData.Add(prop.Name, Convert.ToBase64String(data));
@@ -117,12 +103,11 @@ namespace ScoringGenerator
                 {
                     foreach (JObject def in defaultsArr)
                     {
-                        if (def["platforms"].Contains(finalImage["platform"].Value<string>()) || 
-                            !def.ContainsKey("platforms"))
+                        if (!def.ContainsKey("platforms") || ((JArray)def["platforms"]).Values<string>().Contains(platform))
                         {
                             JObject newDef = new JObject();
-                            defaults[def["name"]] = newDef;
-                            newDef["src"] = File.ReadAllText(imgFolderPath + "\\" + def["src"].Value<string>());
+                            defaults[def["name"].Value<string>()] = newDef;
+                            newDef["src"] = File.ReadAllText(imgFolderPath + "\\" + s + "\\" + def["src"].Value<string>());
                         }
                     }
                 }
@@ -132,18 +117,17 @@ namespace ScoringGenerator
                 {
                     foreach (JObject ch in checksArr)
                     {
-                        if (ch["platforms"].Contains(finalImage["platform"].Value<string>()) ||
-                            !ch.ContainsKey("platforms"))
+                        if (!ch.ContainsKey("platforms") || ((JArray)ch["platforms"]).Values<string>().Contains(platform))
                         {
                             JObject newCh = new JObject();
-                            if (ch.ContainsKey("extends"))
+                            if (!ch.ContainsKey("extends"))
                             {
-                                checks[ch["name"]] = newCh;
-                                newCh["src"] = File.ReadAllText(imgFolderPath + "\\" + ch["src"].Value<string>());
+                                checks[ch["name"].Value<string>()] = newCh;
+                                newCh["src"] = File.ReadAllText(imgFolderPath + "\\" + s + "\\" + ch["src"].Value<string>());
                             }
                             else
                             {
-                                extChecks[ch["name"]] = newCh;
+                                extChecks[ch["name"].Value<string>()] = newCh;
                                 newCh["extends"] = ch["extends"];
                                 newCh["params"] = ch.ContainsKey("params") ? ch["params"] : new JObject();
                                 newCh["args"] = ch.ContainsKey("args") ? ch["args"] : new JObject();
@@ -161,7 +145,8 @@ namespace ScoringGenerator
             {
                 List<string> refs = new List<string>();
                 foreach (JProperty prop in ((JObject)def["args"]).Properties())
-                    Parser.GetRefs(refs, prop.Value.Value<string>(), '$');
+                    if (prop.Value.Type == JTokenType.String)
+                        Parser.GetRefs(refs, prop.Value.Value<string>(), '$');
                 def["refs"] = new JArray(refs);
                 if (!def.ContainsKey("args"))
                     def["args"] = new JObject();
@@ -177,7 +162,8 @@ namespace ScoringGenerator
                 foreach (JObject check in vuln["checks"])
                 {
                     foreach (JProperty prop in ((JObject)check["args"]).Properties())
-                        Parser.GetRefs(refs, prop.Value.Value<string>(), '$');
+                        if (prop.Value.Type == JTokenType.String)
+                            Parser.GetRefs(refs, prop.Value.Value<string>(), '$');
                     if (!check.ContainsKey("args"))
                         check["args"] = new JObject();
                     condStr = count + " " + condStr + "& ";
@@ -200,7 +186,8 @@ namespace ScoringGenerator
                 foreach (JObject check in pens["checks"])
                 {
                     foreach (JProperty prop in ((JObject)check["args"]).Properties())
-                        Parser.GetRefs(refs, prop.Value.Value<string>(), '$');
+                        if (prop.Value.Type == JTokenType.String)
+                            Parser.GetRefs(refs, prop.Value.Value<string>(), '$');
                     if (!check.ContainsKey("args"))
                         check["args"] = new JObject();
                     condStr = count + " " + condStr + "& ";
@@ -213,6 +200,22 @@ namespace ScoringGenerator
 
                 imgPens.Add(pens);
             }
+
+            finalImage["pipModules"] = pip;
+            finalImage["checks"] = checks;
+            finalImage["extChecks"] = extChecks;
+            finalImage["defaults"] = defaults;
+
+            finalImage["imgData"] = imgData;
+            finalImage["imgDefaults"] = imgDefaults;
+            finalImage["imgVulns"] = imgVulns;
+            finalImage["imgPens"] = imgPens;
+
+            finalImage["scoringServer"] = mainImageFile["scoringServer"];
+            finalImage["platform"] = mainImageFile["platform"];
+            finalImage["pollingRate"] = mainImageFile["pollingRate"];
+            finalImage["readme"] = File.ReadAllText(imgFolderPath + "\\" + mainImageFile["readme"].Value<string>());
+            finalImage["timestamp"] = DateTime.UtcNow.ToString("yyyy-MM-ddTHH:mm:ss");
 
             finalImage["totalPoints"] = maxPoints;
 

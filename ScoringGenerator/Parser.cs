@@ -100,8 +100,8 @@ namespace ScoringGenerator
 
         public static bool EvalPostfix(string expr, params bool[] bools)
         {
-            Stack<bool> nums = new Stack<bool>();
             string[] dat = expr.Trim().Split(' ');
+            Stack<bool> nums = new Stack<bool>();
             foreach (string s in dat)
             {
                 if (int.TryParse(s, out int res))
@@ -141,10 +141,14 @@ namespace ScoringGenerator
                         refs.Add(_ref);
                     else finding = true;
                 }
-                else if (c == ' ')
+                else if (c == ' ' && finding)
                 {
                     refs.Add(_ref);
                     finding = false;
+                }
+                else if (finding)
+                {
+                    _ref += c;
                 }
             }
             if (finding)
