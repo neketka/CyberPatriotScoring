@@ -1,0 +1,9 @@
+[Desktop Entry]
+Version=1.0
+Name=Scoring Report
+Comment=Scoring Report
+URL=file:///scoring/report.html
+Icon=/scoring/icon.png
+Terminal=false
+Type=Link
+Categories=Utility;Development;

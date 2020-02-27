@@ -7,6 +7,7 @@ using Newtonsoft.Json;
 using System.IO;
 using Newtonsoft.Json.Linq;
 using System.Security.Cryptography;
+using System.IO.Compression;
 
 namespace ScoringGenerator
 {
@@ -131,9 +132,11 @@ namespace ScoringGenerator
                                 newCh["extends"] = ch["extends"];
                                 newCh["params"] = ch.ContainsKey("params") ? ch["params"] : new JObject();
                                 newCh["args"] = ch.ContainsKey("args") ? ch["args"] : new JObject();
+
                                 List<string> refs = new List<string>();
                                 foreach (JProperty prop in ((JObject)newCh["args"]).Properties())
                                     Parser.GetRefs(refs, prop.Value.Value<string>(), '$');
+
                                 newCh["refs"] = new JArray(refs);
                             }
                         }
@@ -170,9 +173,11 @@ namespace ScoringGenerator
                     ++count;
                 }
                 vuln["refs"] = new JArray(refs);
+
                 if (vuln.ContainsKey("condition"))
                     vuln["condition"] = Parser.ToPostfix(vuln["condition"].Value<string>());
                 else vuln["condition"] = condStr;
+
                 maxPoints += vuln["points"].Value<int>();
 
                 imgVulns.Add(vuln);
@@ -218,11 +223,17 @@ namespace ScoringGenerator
             finalImage["timestamp"] = DateTime.UtcNow.ToString("yyyy-MM-ddTHH:mm:ss");
 
             finalImage["totalPoints"] = maxPoints;
+            //string imageFilePath = ".\\data\\" + platform + "\\scoring" + "\\imagefile.dat";
+            string imageFilePath = imgFolderPath + "\\imagefile.dat";
 
-            JsonWriter writer = new JsonTextWriter(new StreamWriter(imgFolderPath + "\\imagefile.img", false));
+            JsonWriter writer = new JsonTextWriter(new StreamWriter(imageFilePath, false));
             finalImage.WriteTo(writer);
             writer.Flush();
             writer.Close();
+            /*
+            ZipFile.CreateFromDirectory(".\\data\\" + platform, imgFolderPath + "\\ScoringEngine.zip");
+
+            File.Delete(imageFilePath);*/
         }
     }
 }

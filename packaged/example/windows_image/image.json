@@ -1,0 +1,50 @@
+{
+  "modules": [ "default", "exampleModule" ],
+  "scoringServer": "127.0.0.1:133",
+  "platform": "windows",
+  "pollingRate": 15,
+  "readme": "readme.html",
+  "hashes": {
+  },
+  "files": {
+  },
+  "defaults": [
+  ],
+  "vulns": [
+    {
+      "text": "Example point - 1 pt",
+      "points": 1,
+      "checks": [
+        {
+          "name": "exampleCheck",
+          "args": { "state": true }
+        }
+      ],
+      "condition": "0"
+    },
+	{
+      "text": "Cool File Created - 1 pt",
+      "points": 1,
+      "checks": [
+        {
+          "name": "fileExists",
+          "args": { "path": "C:\\Users\\windows\\Documents\\file.txt" }
+        }
+      ],
+      "condition": "0"
+	}
+  ],
+  "penalties": [
+    {
+      "text": "Example penalty - 1 pt",
+      "points": 1,
+      "checks": [
+        {
+          "name": "exampleCheck",
+          "args": { "state": true }
+        }
+      ],
+      "condition": "0"
+    }
+  ]
+}

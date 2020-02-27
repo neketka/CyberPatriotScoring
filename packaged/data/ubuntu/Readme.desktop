@@ -1,0 +1,9 @@
+[Desktop Entry]
+Version=1.0
+Name=Readme
+Comment=Readme
+URL=file:///scoring/readme.html
+Icon=/scoring/icon.png
+Terminal=false
+Type=Link
+Categories=Utility;Development;

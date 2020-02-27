@@ -15,7 +15,6 @@ class ScoringEngine:
         self.readmePath = ""
         self.lockPath = ""
         self.closed = False
-        self.lockInited = False
 
     def setImage(self, image):
         self.image = image
@@ -95,8 +94,6 @@ class ScoringEngine:
         else:
             open(self.lockPath + ".lock", "w+").close()
 
-        self.lockInited = True
-
         if os.path.isfile(self.lockPath):
             existed = True
             states = []
@@ -133,7 +130,7 @@ class ScoringEngine:
             lock.flush()
 
     def close(self):
-        if self.closed or not self.lockInited:
+        if self.closed:
             return
         self.__writeReport("Scoring Engine is not running!")
         self.__saveLock()

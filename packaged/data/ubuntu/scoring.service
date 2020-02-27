@@ -1,0 +1,16 @@
+[Unit]
+Description=CyberPatriot Custom Scoring Engine
+After=syslog.target
+
+[Service]
+Type=simple
+User=root
+WorkingDirectory=/scoring/
+ExecStart=/scoring/main.py
+StandardOutput=syslog
+StandardError=syslog
+KillSignal=SIGINT
+Environment="DISPLAY=:0" "XAUTHORITY=/home/XUSER/.Xauthority"
+
+[Install]
+WantedBy=multi-user.target

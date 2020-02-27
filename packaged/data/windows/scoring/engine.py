@@ -91,7 +91,7 @@ class ScoringEngine:
 
         if os.path.isfile(self.lockPath + ".lock"):
             print("Lock is not free! If engine is not running, delete '" + self.lockPath + ".lock'.")
-            raise BlockingIOError()
+            #raise BlockingIOError()
         else:
             open(self.lockPath + ".lock", "w+").close()
 

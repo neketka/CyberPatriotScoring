@@ -1,0 +1,20 @@
+{
+  "pipModules": { "ubuntu": [] },
+  "defaults": [
+  ],
+  "checks": [
+    {
+      "name": "exampleCheck",
+      "params": { "state": false },
+      "src": "exampleCheck.py"
+    },
+    {
+      "name": "exampleAlwaysTrue",
+      "extends": "exampleCheck",
+      "params": [ ],
+      "args": {
+        "state": true
+      }
+    }
+  ]
+}

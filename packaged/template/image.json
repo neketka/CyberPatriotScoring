@@ -1,0 +1,41 @@
+{
+  "modules": [ "default", "exampleModule" ],
+  "scoringServer": "127.0.0.1:133",
+  "platform": "ubuntu",
+  "pollingRate": 15,
+  "readme": "exampleReadme.html",
+  "hashes": {
+    "exampleHash": "exampleFile.txt"
+  },
+  "files": {
+    "exampleFile": "exampleFile.txt"
+  },
+  "defaults": [
+  ],
+  "vulns": [
+    {
+      "text": "Example point - 1 pt",
+      "points": 1,
+      "checks": [
+        {
+          "name": "exampleCheck",
+          "args": { "state": true }
+        }
+      ],
+      "condition": "0"
+    }
+  ],
+  "penalties": [
+    {
+      "text": "Example penalty - 1 pt",
+      "points": 1,
+      "checks": [
+        {
+          "name": "isUserAdmin",
+          "args": { "user": "amahajan" }
+        }
+      ],
+      "condition": "!0"
+    }
+  ]
+}
